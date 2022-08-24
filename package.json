@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "xml2js": "^0.4.23"
+  },
+  "name": "leitor-xml",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
