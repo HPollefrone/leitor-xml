@@ -1,13 +1,14 @@
 const fs = require("fs");
 const JSZip = require("jszip");
+const path = require('path');
 
-
+/*
 fs.readFile("teste.zip", function(err, data) {
     if (err) throw err;
     JSZip.loadAsync(data).then(function (zip) {
         const res = zip
         console.log(res.files)
-        res.files
+       
             
         });
         //console.log(res.nfeProc.NFe[0].infNFe[0].emit[0])
@@ -22,5 +23,20 @@ fs.readFile("teste.zip", function(err, data) {
         //DUPLICATA == CÓDIGO DO BOLETO 
         //console.log(res.nfeProc.NFe[0].infNFe[0].cobr[0].dup[0].nDup[0])
         
+});
+*/
+
+fs.readFile("teste.zip", function(err, data) {
+    if (!err) {
+        var zip = new JSZip();
+        zip.loadAsync(data).then(function(contents) {
+            Object.keys(contents.files).forEach(function(filename) {
+                zip.file(filename).async('nodebuffer').then(function(content) {
+                    var dest = path + filename;
+                    fs.writeFileSync(dest, content);
+                });
+            });
+        });
+    }
 });
 
