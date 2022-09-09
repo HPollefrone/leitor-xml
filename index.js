@@ -3,6 +3,8 @@ const JSZip = require("jszip");
 //const path = require("path");
 const xml2js = require("xml2js");
 const _ = require("lodash");
+const {addDays, compareAsc, format, parse} = require("date-fns");
+
 
 const parser = new xml2js.Parser();
 var datas = {
@@ -53,9 +55,25 @@ fs.readFile("teste.zip", function (err, data) {
               
               const duplicata = res.nfeProc.NFe[0].infNFe[0].ide[0].nNF[0];
                 notas.duplicatas = duplicata
+                
+                const dataVenc = convertDateFromCNAB(formatDate(dataVencimento));
+                if (dataVencimentoValida(dataVenc.year, dataVenc.month, dataVenc.day)) {
+                  datas.notas.push(notas);
+                } else {
+                  // logger.debug(
+                  //   'Data de vencimento invalida para o CNPJ %s com dataVencimento %s e valor %d (datas corte: min %s e max %s)',
+                  //   cnpj,
+                  //   (dataVencimento.year+"/"+dataVencimento.month+"/"+dataVencimento.day+' dd/MM/yyyy'),
+                  //   valorTotal,
+                  //   format(addDays(new Date(), 7), 'dd/MM/yyyy'),
+                  //   format(addDays(new Date(), 120), 'dd/MM/yyyy'),
+                  // );
+                  //console.log(dataVenc.year, dataVenc.month, dataVenc.day)
+                  datas.notasInvalidas.push(notas);
+                }
 
 
-              datas.notas.push(notas);        
+              //datas.notas.push(notas);        
               index += 1; 
                 
             });
@@ -99,7 +117,6 @@ func1(4).then((number) => {
 });
 
 
-
 function formatDate(date){
   const newDate = date.substring(8,)+
                   date.substring(5,7)+
@@ -107,6 +124,38 @@ function formatDate(date){
 
   return newDate
 }
+
+/**ENTENDER SE DATA DO CNAB ESTÁ ENTRE HOJE+7 DIAS && HOJE+120DIAS */
+const dataMinVencimento = (year, month, day) =>
+  compareAsc(new Date(year, month, day), addDays(new Date(), 7));
+
+const dataMaxVencimento = (year, month, day) =>
+  compareAsc(addDays(new Date(), 120), new Date(year, month, day));
+
+const dataVencimentoValida = (year, month, day) => // (+new Date() + Math.floor(Math.random() * 4)) % 2 === 0;
+dataMinVencimento(year, month, day) > 0 && dataMaxVencimento(year, month, day) > 0;
+
+  
+//const cnabDate = parseInt(050722)
+//const cnabDateObj = convertDateFromCNAB(cnabDate); 
+  
+  
+  
+function convertDateFromCNAB(cnabDate) {
+    //console.log(`antes de formatar: ${cnabDate}`)
+    const day = cnabDate.substring(0,2);
+    const month = cnabDate.substring(2,4);
+    const year = '20'+cnabDate.substring(4,);
+    const date = { 
+      'year': year,
+      'month': String(parseInt(month)-1) ,
+      'day': String(day)
+    };
+    
+    //console.log(`year:${date.year}, month:${date.month}, day:${date.day}`)
+    return date
+  }; 
+
 /**
 return{
     cnpjCedente,

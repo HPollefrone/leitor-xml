@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "date-fns": "^2.29.2",
     "jszip": "^3.10.1",
     "lodash": "^4.17.21",
     "xml2js": "^0.4.23"
